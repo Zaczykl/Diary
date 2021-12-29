@@ -1,7 +1,6 @@
 ﻿using Diary.Commands;
 using Diary.Models;
 using Diary.Views;
-using MahApps;
 using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
 using System;
@@ -18,8 +17,8 @@ namespace Diary.ViewModels
         public MainViewModel()
         {
 
-            AddStudentCommand = new RelayCommand(AddStudent);
-            EditStudentCommand = new RelayCommand(EditStudent,CanEditDeleteStudent);
+            AddStudentCommand = new RelayCommand(AddEditStudent);
+            EditStudentCommand = new RelayCommand(AddEditStudent,CanEditDeleteStudent);
             DeleteStudentCommand = new AsyncRelayCommand(DeleteStudent, CanEditDeleteStudent);
             RefreshStudentsCommand = new RelayCommand(RefreshStudents);
             InitGroups();
@@ -48,7 +47,11 @@ namespace Diary.ViewModels
         public ObservableCollection<Student> Students
         {
             get { return _students; }
-            set { _students = value; }
+            set
+            {
+                _students = value;
+                OnPropertyChanged();
+            }
         }
 
         private int _selectedGroupId;
@@ -89,18 +92,13 @@ namespace Diary.ViewModels
             RefreshDiary();
         }
 
-        private void AddStudent(object obj)
+        private void AddEditStudent(object obj)
         {
             var addEditStudentWindow = new AddEditStudentView(obj as Student);
             addEditStudentWindow.Closed += AddEditStudentWindow_Closed;
             addEditStudentWindow.ShowDialog();
         }
-        private void EditStudent(object obj)
-        {
-            var addEditStudentWindow = new AddEditStudentView(obj as Student);
-            addEditStudentWindow.Closed += AddEditStudentWindow_Closed;
-            addEditStudentWindow.ShowDialog();
-        }
+       
 
         private void AddEditStudentWindow_Closed(object sender, EventArgs e)
         {
